@@ -29,17 +29,15 @@ abstract class Api_Connector
 
     try
     {        
-            $request = new OAuthRequester($url, $method, $params);
-            $result = $request->doRequest();
-            
-            var_dump($result['body']);
-            return $result['body'];
+      $request = new OAuthRequester($url, $method, $params);
+      $result = $request->doRequest();
+      return $result['body'];
     }
     catch(OAuthException2 $e)
     {
-        print "\n";
-        $error = $e->getMessage();
-        print $error."\n";
+      print "\n";
+      $error = $e->getMessage();
+      print $error."\n";
     }
 
   }

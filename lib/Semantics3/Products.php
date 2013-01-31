@@ -15,9 +15,9 @@ class Semantics3_Products extends Api_Connector {
   public function products_field(){
     if (isset($this->_products_query))
         $this->_products_query = array_merge_recursive((array)$this->_products_query, $this->_nest_arguments(func_get_args()) );
-    echo "FINAL:";
-    echo json_encode($this->_products_query);
-    echo "\n";
+    #echo "FINAL:";
+    #echo json_encode($this->_products_query);
+    #echo "\n";
     return;
   }
 
@@ -28,9 +28,9 @@ class Semantics3_Products extends Api_Connector {
    */
   public function categories_field($field_name, $field_value){
     $this->_categories_query[$field_name] = $field_value;
-    echo "FINAL:";
-    echo json_encode($this->_categories_query);
-    echo "\n";
+    #echo "FINAL:";
+    #echo json_encode($this->_categories_query);
+    #echo "\n";
     return;
   }
 
@@ -40,7 +40,8 @@ class Semantics3_Products extends Api_Connector {
    * This function calls the API and returns the categories based on the query
    */
   public function get_categories(){
-    return $this->_run_query("categories",json_encode($this->_categories_query));
+    $this->_query_result = parent::run_query("categories",json_encode($this->_categories_query));
+    return $this->_query_result;
   }
 
   private function _nest_arguments(){
