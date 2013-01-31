@@ -1,19 +1,11 @@
 <?php
 
-class Semantics3_Api
-{
-  public $apiKey;
-  public $apiSecret;
-
+class Semantics3_Products extends Api_Connector {
+    
   private $_products_query = array();
   private $_categories_query = array();
   private $_query_result = array();
 
-  public function __construct($apiKey=null,$apiSecret=null){
-    $this->apiKey = $apiKey;
-    $this->apiSecret = $apiSecret;
-
-  }
 
   /**
    * set the products search fields
@@ -141,51 +133,18 @@ class Semantics3_Api
   }
 
   public function query_json($endpoint, $query_json){
-    return $this->_run_query($endpoint,$query_json);
+    $this->_query_result = parent::run_query($endpoint,$query_json);
+    return $this->_query_result;
   }
 
   public function get_products(){
-    return $this->_run_query("products",json_encode($this->_products_query));
+    $this->_query_result = parent::run_query("products",json_encode($this->_products_query));
+    return $this->_query_result;
   }
 
   public function query($endpoint, $query_arr = array()){
-    return $this->_run_query($endpoint,json_encode($query_arr));
+    $this->_query_result = parent::run_query($endpoint,json_encode($query_arr));
+    return $this->_query_result;
   }
 
-  private function _run_query($endpoint, $query_arr)
-  {
-    if (!$this->apiKey)
-      throw new Semantics3_AuthenticationError('No API key provided.');
-
-    if (!$this->apiSecret)
-      throw new Semantics3_AuthenticationError('No API secret provided.');
-
-
-    $options = array( 'consumer_key' => $this->apiKey, 'consumer_secret' => $this->apiSecret );
-    OAuthStore::instance("2Leg", $options );
-
-    $url = "https://api.semantics3.com/v1/$endpoint?q=".$query_arr;
-    $method = "GET"; 
-    $params = null;
-
-    try
-    {        
-            $request = new OAuthRequester($url, $method, $params);
-            $result = $request->doRequest();
-            
-            $this->_query_result = $result['body'];
-            var_dump($this->_query_result);
-            return $this->_query_result;
-    }
-    catch(OAuthException2 $e)
-    {
-        print "\n";
-        $error = $e->getMessage();
-        print $error."\n";
-    }
-
-  }
 }
-
-
-
