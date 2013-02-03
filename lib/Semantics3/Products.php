@@ -1,10 +1,9 @@
 <?php
 
 class Semantics3_Products extends Api_Connector {
-    
-  private $_products_query = array();
-  private $_categories_query = array();
+
   private $_query_result = array();
+  private $_data_query = array();
 
 
   /**
@@ -13,11 +12,10 @@ class Semantics3_Products extends Api_Connector {
    * This function sets the products search fields
    */
   public function products_field(){
-    if (isset($this->_products_query))
-        $this->_products_query = array_merge_recursive((array)$this->_products_query, $this->_nest_arguments(func_get_args()) );
-    #echo "FINAL:";
-    #echo json_encode($this->_products_query);
-    #echo "\n";
+    $args = func_get_args();
+    array_unshift($args, "products");
+
+    call_user_func_array("self::add", $args);
     return;
   }
 
@@ -27,11 +25,50 @@ class Semantics3_Products extends Api_Connector {
    * This function sets the categories search fields
    */
   public function categories_field($field_name, $field_value){
-    $this->_categories_query[$field_name] = $field_value;
-    #echo "FINAL:";
-    #echo json_encode($this->_categories_query);
-    #echo "\n";
+    $args = func_get_args();
+    array_unshift($args, "categories");
+
+    call_user_func_array("self::add", $args);
     return;
+  }
+
+  public function offers_field(){
+    $args = func_get_args();
+    array_unshift($args, "offers");
+
+    call_user_func_array("self::add", $args);
+    return;
+  }
+
+  public function add(){
+    $args = func_get_args();
+    $endpoint = array_shift($args);
+
+    if (!array_key_exists($endpoint, $this->_data_query)){
+      $this->_data_query[$endpoint] = array();
+    }
+    $this->_data_query[$endpoint] = array_merge_recursive((array)$this->_data_query[$endpoint], call_user_func_array("self::_nest_arguments", $args) );
+
+  }
+
+  public function remove(){
+    $args = func_get_args();
+    $endpoint = array_shift($args);
+
+    $query = &$this->_data_query[$endpoint];
+
+    foreach ($args as $value){
+      if (array_key_exists($value,(array)$query)){
+        if (end($args) == $value){
+          unset($query[$value]);
+        }
+        else
+          $query = &$query[$value];
+      }
+      else {
+        throw new Semantics3_ParameterError("Attempted to detele something which didn't exist.");
+      }
+    }
   }
 
   /**
@@ -40,26 +77,29 @@ class Semantics3_Products extends Api_Connector {
    * This function calls the API and returns the categories based on the query
    */
   public function get_categories(){
-    $this->_query_result = parent::run_query("categories",json_encode($this->_categories_query));
+    $this->_query_result = parent::run_query("categories",json_encode($this->_data_query["categories"]));
+    return $this->_query_result;
+  }
+
+    public function get_offers(){
+    $this->_query_result = parent::run_query("offers",json_encode($this->_data_query["offers"]));
     return $this->_query_result;
   }
 
   private function _nest_arguments(){
     $args = func_get_args();
-    $args = $args[0];
-    if ( is_array($args[0]) )
-        $args = $args[0]; 
 
-    $temp_key = $args[0];
-    if (count($args) == 2)
-        $temp[$args[0]] = $args[1];
+    $query_key = $args[0];
+    if (count($args) == 2){
+      $query[$query_key] = $args[1];
+    }
     else if (count($args) > 2) {
-        unset($args[0]);
-        $args = array_values($args);
-        $temp[$temp_key] = $this->_nest_arguments($args);
+      unset($args[0]);
+      $args = array_values($args);
+      $query[$query_key] = call_user_func_array("self::_nest_arguments", $args);
     }
 
-    return $temp;
+    return $query;
   }
 
   /**
@@ -105,25 +145,24 @@ class Semantics3_Products extends Api_Connector {
 
   private function _get_products_field(){
     # Throw exception if no product field
-    return json_encode($this->_products_query);
+    return json_encode($this->_data_query["products"]);
   }
 
   public function clear_query(){
-    $this->_products_query = array();
-    $this->_categories_query = array();
+    $this->_data_query = array();
     $this->_query_result = array();
   }
 
-  public function iter(){
+  public function iterate_products(){
     if (!array_key_exists('total_results_count', $this->_query_result) || $this->_query_result['offset'] >= $this->_query_result['total_results_count'])
       return 0;
 
     $limit = 10;
 
-    if (array_key_exists('limit', $this->_products_query))
-      $limit = $this->_products_query['limit'];
+    if (array_key_exists('limit', $this->_data_query["products"]))
+      $limit = $this->_data_query["products"]['limit'];
 
-    $this->_products_query['offset'] += $limit;
+    $this->_data_query["products"]['offset'] += $limit;
 
     $this->get_products();
 
@@ -138,8 +177,22 @@ class Semantics3_Products extends Api_Connector {
     return $this->_query_result;
   }
 
+  public function get_query_json($endpoint = null){
+    if ($endpoint == null){
+      throw new Semantics3_ParameterError("Query Endpoint was not defined. You need to provide one. Eg: products");
+    }
+    return json_encode($this->_data_query[$endpoint]);
+  }
+
+  public function get_query($endpoint = null){
+    if ($endpoint == null){
+      throw new Semantics3_ParameterError("Query Endpoint was not defined. You need to provide one. Eg: products");
+    }
+    return $this->_data_query[$endpoint];
+  }
+
   public function get_products(){
-    $this->_query_result = parent::run_query("products",json_encode($this->_products_query));
+    $this->_query_result = parent::run_query("products",json_encode($this->_data_query["products"]));
     return $this->_query_result;
   }
 
