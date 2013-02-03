@@ -16,6 +16,8 @@ if (!class_exists('OAuthRequester')) {
 
 require(dirname(__FILE__) . '/Semantics3/Error.php');
 require(dirname(__FILE__) . '/Semantics3/AuthenticationError.php');
+require(dirname(__FILE__) . '/Semantics3/ParameterError.php');
+
 
 require(dirname(__FILE__) . '/Semantics3/ApiConnector.php');
 require(dirname(__FILE__) . '/Semantics3/Products.php');
