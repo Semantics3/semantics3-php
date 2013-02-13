@@ -1,0 +1,23 @@
+{
+  "name": "semantics3/semantics3-php",
+  "description": "PHP library bindings for the Semantics3 APIs",
+  "keywords": [
+    "semantics3",
+    "products data",
+    "api"
+  ],
+  "homepage": "https://www.semantics3.com/",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Semantics3 and contributors",
+      "homepage": "https://github.com/semantics3/semantics3-php/contributors"
+    }
+  ],
+  "require": {
+    "php": ">=5.2"
+  },
+  "autoload": {
+    "classmap": ["lib/Semantics3/"]
+  }
+}
