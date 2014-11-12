@@ -154,22 +154,29 @@ class Semantics3_Products extends Api_Connector {
   }
 
   public function iterate_products(){
-    if (!array_key_exists('total_results_count', $this->_query_result) || $this->_query_result['offset'] >= $this->_query_result['total_results_count'])
-      return 0;
+    if (gettype($this->_query_result) == "string"){
+      $query_result = json_decode($this->_query_result, true);
+      if (!array_key_exists('total_results_count', $query_result) || (array_key_exists('offset', $query_result) && $query_result['offset'] >= $query_result['total_results_count']))
+        return 0;
 
-    $limit = 10;
+      $limit = 10;
 
-    if (array_key_exists('limit', $this->_data_query["products"]))
-      $limit = $this->_data_query["products"]['limit'];
+      if (array_key_exists('limit', $this->_data_query["products"]))
+        $limit = $this->_data_query["products"]['limit'];
 
-    $this->_data_query["products"]['offset'] += $limit;
+      if (!array_key_exists('offset', $query_result))
+        $this->_data_query["products"]['offset'] = 0;
+      else
+        $this->_data_query["products"]['offset'] = $query_result['offset'];
 
-    $this->get_products();
-
+      $this->_data_query["products"]['offset'] += $limit;
+    }
+    return $this->get_products();
   }
 
   public function all_products(){
-    return array_key_exists('results', $this->_query_result) ? $this->_query_result['results'] : 0;
+    $query_result = json_decode($this->_query_result, true);
+    return array_key_exists('results', $query_result) ? $query_result['results'] : 0;
   }
 
   public function query_json($endpoint, $query_json){
