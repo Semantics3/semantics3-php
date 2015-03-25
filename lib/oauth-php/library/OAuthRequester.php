@@ -336,7 +336,7 @@ class OAuthRequester extends OAuthRequestSigner
 			// Make sure that the content type of the request is ok
 			if (!$has_content_type)
 			{
-				$header[]         = 'Content-Type: application/octet-stream';
+				$header[]         = 'Content-Type: application/json';
 				$has_content_type = true;
 			}
 			

@@ -77,12 +77,12 @@ class Semantics3_Products extends Api_Connector {
    * This function calls the API and returns the categories based on the query
    */
   public function get_categories(){
-    $this->_query_result = parent::run_query("categories",json_encode($this->_data_query["categories"]));
+    $this->_query_result = parent::run_query("categories",$this->_data_query["categories"]);
     return $this->_query_result;
   }
 
     public function get_offers(){
-    $this->_query_result = parent::run_query("offers",json_encode($this->_data_query["offers"]));
+    $this->_query_result = parent::run_query("offers",$this->_data_query["offers"]);
     return $this->_query_result;
   }
 
@@ -180,7 +180,7 @@ class Semantics3_Products extends Api_Connector {
   }
 
   public function query_json($endpoint, $query_json){
-    $this->_query_result = parent::run_query($endpoint,$query_json);
+    $this->_query_result = parent::run_query($endpoint,json_decode($query_json));
     return $this->_query_result;
   }
 
@@ -199,12 +199,12 @@ class Semantics3_Products extends Api_Connector {
   }
 
   public function get_products(){
-    $this->_query_result = parent::run_query("products",json_encode($this->_data_query["products"]));
+    $this->_query_result = parent::run_query("products",$this->_data_query["products"]);
     return $this->_query_result;
   }
 
   public function query($endpoint, $query_arr = array()){
-    $this->_query_result = parent::run_query($endpoint,json_encode($query_arr));
+    $this->_query_result = parent::run_query($endpoint,$query_arr);
     return $this->_query_result;
   }
 
