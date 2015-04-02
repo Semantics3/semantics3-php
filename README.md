@@ -1,5 +1,5 @@
-# semantics3
-semantics3 is the php bindings for accessing the Semantics3 Products API, which provides structured information, including pricing histories, for a large number of products.
+# semantics3-php
+semantics3-php is the PHP bindings for accessing the Semantics3 Products API, which provides structured information, including pricing histories, for a large number of products.
 See https://www.semantics3.com for more information.
 
 Quickstart guide: https://www.semantics3.com/quickstart
@@ -7,7 +7,7 @@ API documentation can be found at https://www.semantics3.com/docs/
 
 ## Installation
 
-semantics3 can be installed through composer:
+semantics3-php can be installed through composer:
 
 ```bash
 php composer.phar install
@@ -39,120 +39,98 @@ $secret = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
 $requestor = new Semantics3_Products($key,$secret);
 ```
 
-### First Query aka 'Hello World':
+### First Request aka 'Hello World':
 
-Let's make our first query! For this query, we are going to search for all Toshiba products that fall under the category of "Computers and Accessories", whose cat_id is 4992. 
+Let's run our first request! We are going to run a simple search fo the word "iPhone" as follows:
 
 ```php
-# Build the query
-$requestor->products_field("cat_id", 4992);
-$requestor->products_field("brand", "Toshiba");
+# Build the request
+$requestor->products_field( "search", "iphone" );
 
-# Make the query
+# Run the request
 $results = $requestor->get_products();
 
-# View the results of the query
+# View the results of the request
 echo $results;
 ```
 
-## Examples
+## Sample Requests
 
-The following examples show you how to interface with some of the core functionality of the Semantics3 Products API. For more detailed examples check out the Quickstart guide: https://www.semantics3.com/quickstart
-
-### Explore the Category Tree
-
-In this example we are going to be accessing the categories endpoint. We are going to be specifically exploiring the "Computers and Accessories" category, which has a cat_id of 4992. For more details regarding our category tree and associated cat_ids check out our API docs at https://www.semantics3.com/docs
-
-```python
-# Build the query
-$requestor->categories_field("cat_id", "4992");
-
-# Execute the query
-$results = $requestor->get_products();
-
-# View the results of the query
-echo $results;
-```
-
-### Nested Search Query
-
-You can intuitively construct all your complex queries but just repeatedly using the products_field() or add() methods.
-Here is how we translate the following JSON query:
-
-```javascript
-{
-	"cat_id" : 4992, 
-	"brand"  : "Toshiba",
-	"weight" : { "gte":1000000, "lt":1500000 },
-	"sitedetails" : {
-		"name" : "newegg.com",
-		"latestoffers" : {
-			"currency": "USD",
-			"price"   : { "gte" : 100 } 
-		}
-	}
-}
-```
-
-
-This query returns all Toshiba products within a certain weight range narrowed down to just those that retailed recently on newegg.com for >= USD 100.
-
-```python
-# Build the query
-$requestor->products_field("cat_id", 4992);
-$requestor->products_field("brand", "Toshiba");
-$requestor->products_field("weight", "gte", 1000000);
-$requestor->products_field("weight", "lt", 1500000);
-$requestor->products_field("sitedetails", "name", "newegg.com");
-$requestor->products_field("sitedetails", "latestoffers", "currency", "USD");
-$requestor->products_field("sitedetails", "latestoffers", "price", "gte", 100);
-# Let's make a modification - say we no longer want the weight attribute
-$requestor->remove("products", "weight");
-
-# Make the query
-$results = $requestor->get_products();
-echo $results
-```
+The following requests show you how to interface with some of the core functionality of the Semantics3 Products API. For more detailed examples check out the Quickstart guide: https://www.semantics3.com/quickstart
 
 ### Pagination
 
-The Semantics3 API allows for pagination, so you can request for, say, 5 results,
-and then continue to obtain the next 5 from where you stopped previously. For the
-python semantics3 module, we have implemented this using iterators.
-All you have to do is specify a cache size, and use it the same way you would
-any iterator:
+The example in our "Hello World" script returns the first 10 results. In this example, we'll scroll to subsequent pages, beyond our initial request:
 
-```python
-# Specify a cache size
-$requestor->limit(5);
+```php
+# Build the request
+$requestor->products_field( "search", "iphone" );
 
-# Execute the query
-$results = $requestor->iterate_products();
+# Run the request
+$results = $requestor->get_products();
 
-# View the results of the query
+# View the results of the request
+echo $results;
+
+$page = 0
+while ($results = $requestor->iterate_products()) {
+    $page++;
+    echo "We are at page = $page\n";
+    echo "The results for this page are:\n";
+    echo $results;
+}
+```
+
+### UPC Query
+
+Running a UPC/EAN/GTIN query is as simple as running a search query:
+
+```php
+# Build the request
+$requestor->products_field( "upc", "883974958450" );
+$requestor->products_field( "field", ["name","gtins"] );
+
+# Run the request
+$results = $requestor->get_products();
+
+# View the results of the request
 echo $results;
 ```
-Our library will automatically request for results 10 products at a time.
 
+### URL Query
 
-### Explore Price Histories
-For this example, we are going to look at a particular product that is sold by select merchants and has a price of >= USD 30 and seen after a specific date (specified as a UNIX timestamp).
+Get the picture? You can run URL queries as follows:
 
-```python
-# Build the query
-$requestor->offers_field("sem3_id", "4znupRCkN6w2Q4Ke4s6sUC");
-$requestor->offers_field("seller", ["LFleurs","Frys","Walmart"] );
-$requestor->offers_field("currency", "USD");
-$requestor->offers_field("price", "gte", 30);
-$requestor->offers_field("lastrecorded_at", "gte", 1348654600);
+```php
+$requestor->products_field( "url", "http://www.walmart.com/ip/15833173" );
+$results = $requestor->get_products();
+echo $results;
+```
 
+### Price Filter
 
+Filter by price using the "lt" (less than) tag:
 
-# Make the query
-$results = $requestor->get_offers());
+```php
+$requestor->products_field( "search", "iphone" );
+$requestor->products_field( "price", "lt", 300 );
+$results = $requestor->get_products();
+echo $results;
+```
 
-# View the results of the query
-echo $results
+### Category ID Query
+
+To lookup details about a cat_id, run your request against the categories resource:
+
+```php
+# Build the request
+$requestor->categories_field("cat_id", "4992");
+
+# Run the request
+$results = $requestor->get_products();
+
+# View the results of the request
+echo $results;
 ```
 
 ## Troubleshooting
@@ -176,7 +154,7 @@ Use GitHub's standard fork/commit/pull-request cycle.  If you have any questions
 
 ## Copyright
 
-Copyright (c) 2013 Semantics3 Inc.
+Copyright (c) 2015 Semantics3 Inc.
 
 ## License
 
