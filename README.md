@@ -133,6 +133,91 @@ $results = $requestor->get_products();
 echo $results;
 ```
 
+## Webhooks
+You can use webhooks to get near-real-time price updates from Semantics3.
+
+### Creating a webhook
+
+You can register a webhook with Semantics3 by sending a POST request to `"webhooks"` endpoint.
+To verify that your URL is active, a GET request will be sent to your server with a `verification_code` parameter. Your server should respond with `verification_code` in the response body to complete the verification process.
+
+```php
+$params["webhook_uri"] = "http://mydomain.com/webhooks-callback-url";
+
+
+$results = $requestor->run_query("webhooks", $params, "POST");
+echo $results;
+```
+
+To fetch existing webhooks
+```php
+$results = $requestor->run_query("webhooks", null);
+echo $results;
+```
+
+To remove a webhook
+```php
+$webhook_id = "7JcGN81u";
+
+$endpoint = "webhooks/" . $webhook_id;
+
+$results = $requestor->run_query($endpoint, null, "DELETE");
+echo $results;
+```
+
+### Registering events
+Once you register a webhook, you can start adding events to it. Semantics3 server will send you notifications when these events occur.
+To register events for a specific webhook send a POST request to the `"webhooks/{webhook_id}/events"` endpoint
+
+```php
+$params = array(
+    "type" => "price.change",
+    "product" => array(
+        "sem3_id" => "1QZC8wchX62eCYS2CACmka"
+    ),
+    "constraints" => array(
+        "gte" => 10,
+        "lte" => 100
+    )
+);
+
+$webhook_id = "7JcGN81u";
+$endpoint = "webhooks/" . $webhook_id . "/events";
+
+$results = $requestor->run_query($endpoint, $params, "POST");
+echo $results;
+```
+
+To fetch all registered events for a give webhook
+```php
+$webhook_id = "7JcGN81u";
+$endpoint = "webhooks/" . $webhook_id . "/events";
+
+$results = $requestor->run_query($endpoint, $params, "GET");
+echo $results;
+```
+
+### Webhook Notifications
+Once you have created a webhook and registered events on it, notifications will be sent to your registered webhook URI via a POST request when the corresponding events occur. Make sure that your server can accept POST requests. Here is how a sample notification object looks like
+```javascript
+{
+    "type": "price.change",
+    "event_id": "XyZgOZ5q",
+    "notification_id": "X4jsdDsW",
+    "changes": [{
+        "site": "abc.com",
+        "url": "http://www.abc.com/def",
+        "previous_price": 45.50,
+        "current_price": 41.00
+    }, {
+        "site": "walmart.com",
+        "url": "http://www.walmart.com/ip/20671263",
+        "previous_price": 34.00,
+        "current_price": 42.00
+    }]
+}
+```
+
 ## Troubleshooting
 
 If you are getting "Exception CURL error: SSL certificate problem, verify that the CA cert is OK" or similar, that indicates problem with the remote SSL certificate.
