@@ -23,7 +23,7 @@ abstract class Api_Connector
     OAuthStore::instance("2Leg", $options );
     $url = $this->apiBase.$endpoint;
     if ($method == "GET") {
-      $url = $url."?q=".json_encode($params);
+      $url = $url."?q=".urlencode(json_encode($params));
       $params = null;
     }
     else {
