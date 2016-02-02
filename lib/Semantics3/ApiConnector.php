@@ -36,12 +36,12 @@ abstract class Api_Connector
         }
 
         if(!$this->catchExceptions) {
-            return $this->getOAuthRequester();
+            return $this->getOAuthRequester($method, $url, $params);
         }
 
         try
         {
-            return $this->getOAuthRequester();
+            return $this->getOAuthRequester($method, $url, $params);
         }
         catch(OAuthException2 $e)
         {
@@ -52,7 +52,7 @@ abstract class Api_Connector
 
     }
 
-    protected function getOAuthRequester(){
+    protected function getOAuthRequester($method, $url, $params){
         switch ($method) {
         case "GET":
             $request = new OAuthRequester($url, $method, $params);
