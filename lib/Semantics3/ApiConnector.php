@@ -11,7 +11,7 @@ abstract class Api_Connector
     $this->apiBase = is_null($apiBase) ? "https://api.semantics3.com/v1/" : $apiBase;
   }
 
-  public function run_query($endpoint, $params, $method="GET")
+  public function run_query($endpoint, $params, $method="GET", array $requestOptions = [])
   {
     if (!$this->apiKey)
       throw new Semantics3_AuthenticationError('No API key provided.');
@@ -24,7 +24,6 @@ abstract class Api_Connector
     $url = $this->apiBase.$endpoint;
     if ($method == "GET") {
       $url = $url."?q=".urlencode(json_encode($params));
-      $params = null;
     }
     else {
       $params = json_encode($params);
@@ -34,7 +33,7 @@ abstract class Api_Connector
     {
       switch ($method) {
         case "GET":
-          $request = new OAuthRequester($url, $method, $params);
+          $request = new OAuthRequester($url, $method);
           break;
         case "POST":
           $request = new OAuthRequester($url, $method, '', $params);
@@ -46,7 +45,11 @@ abstract class Api_Connector
           $request = new OAuthRequester($url, $method);
       }
 
-      $result = $request->doRequest();
+      $usrId = array_key_exists('usrId', $requestOptions) ? $requestOptions['usrId'] : 0;
+      $curlOptions = array_key_exists('curlOptions', $requestOptions) ? $requestOptions['curlOptions'] : [];
+      $options = array_key_exists('options', $requestOptions) ? $requestOptions['options'] : [];
+
+      $result = $request->doRequest($usrId, $curlOptions, $options);
       return $result['body'];
     }
     catch(OAuthException2 $e)
