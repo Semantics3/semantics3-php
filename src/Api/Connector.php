@@ -18,7 +18,7 @@ abstract class Connector
     $this->apiBase = is_null($apiBase) ? "https://api.semantics3.com/v1/" : $apiBase;
   }
 
-  public function run_query($endpoint, $params, $method="GET", array $requestOptions = [])
+  public function runQuery($endpoint, $params, $method="GET", array $requestOptions = [])
   {
     if (!$this->apiKey)
       throw new AuthenticationError('No API key provided.');

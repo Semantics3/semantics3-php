@@ -6,8 +6,8 @@ use Semantics3\Api\Connector;
 
 class Products extends Connector {
 
-  private $_query_result = array();
-  private $_data_query = array();
+  private $queryResult = array();
+  private $dataQuery = array();
 
 
   /**
@@ -15,7 +15,7 @@ class Products extends Connector {
    * 
    * This function sets the products search fields
    */
-  public function products_field(){
+  public function productsField(){
     $args = func_get_args();
     array_unshift($args, "products");
 
@@ -28,7 +28,7 @@ class Products extends Connector {
    * 
    * This function sets the categories search fields
    */
-  public function categories_field($field_name, $field_value){
+  public function categoriesField($fieldName, $fieldValue){
     $args = func_get_args();
     array_unshift($args, "categories");
 
@@ -36,7 +36,7 @@ class Products extends Connector {
     return;
   }
 
-  public function offers_field(){
+  public function offersField(){
     $args = func_get_args();
     array_unshift($args, "offers");
 
@@ -48,18 +48,18 @@ class Products extends Connector {
     $args = func_get_args();
     $endpoint = array_shift($args);
 
-    if (!array_key_exists($endpoint, $this->_data_query)){
-      $this->_data_query[$endpoint] = array();
+    if (!array_key_exists($endpoint, $this->dataQuery)){
+      $this->dataQuery[$endpoint] = array();
     }
-    $this->_data_query[$endpoint] = array_merge_recursive((array)$this->_data_query[$endpoint], call_user_func_array("self::_nest_arguments", $args) );
-
+    $this->dataQuery[$endpoint] = array_merge_recursive((array)$this->dataQuery[$endpoint],call_user_func_array("self::_nest_arguments", $args)
+    );
   }
 
   public function remove(){
     $args = func_get_args();
     $endpoint = array_shift($args);
 
-    $query = &$this->_data_query[$endpoint];
+    $query = &$this->dataQuery[$endpoint];
 
     foreach ($args as $value){
       if (array_key_exists($value,(array)$query)){
@@ -80,27 +80,26 @@ class Products extends Connector {
    * 
    * This function calls the API and returns the categories based on the query
    */
-  public function get_categories(){
-    $this->_query_result = parent::run_query("categories",$this->_data_query["categories"]);
-    return $this->_query_result;
+  public function getCategories(){
+    $this->queryResult = parent::run_query("categories",$this->dataQuery["categories"]);
+    return $this->queryResult;
   }
 
     public function get_offers(){
-    $this->_query_result = parent::run_query("offers",$this->_data_query["offers"]);
-    return $this->_query_result;
+    $this->queryResult = parent::run_query("offers",$this->dataQuery["offers"]);
+    return $this->queryResult;
   }
 
-  private function _nest_arguments(){
+  private function nestArguments(){
     $args = func_get_args();
 
-    $query_key = $args[0];
+    $queryKey = $args[0];
     if (count($args) == 2){
-      $query[$query_key] = $args[1];
-    }
-    else if (count($args) > 2) {
+      $query[$queryKey] = $args[1];
+    } else if (count($args) > 2) {
       unset($args[0]);
       $args = array_values($args);
-      $query[$query_key] = call_user_func_array("self::_nest_arguments", $args);
+      $query[$queryKey] = call_user_func_array("self::_nest_arguments", $args);
     }
 
     return $query;
@@ -123,8 +122,8 @@ class Products extends Connector {
    * 
    * This function sets the latestoffers fields
    */
-  public function latestoffers($field_name, $field_value1, $field_value2){
-    $args = array("sitedetails", $field_name, $field_value1, $field_value2);
+  public function latestoffers($fieldName, $fieldValue1, $fieldValue2){
+    $args = array("sitedetails", $fieldName, $fieldValue1, $fieldValue2);
 
     call_user_func_array("self::products_field", $args);
   }
@@ -141,75 +140,75 @@ class Products extends Connector {
     call_user_func_array("self::products_field", $args);
   }
 
-  public function sort_list($sort_field, $sort_value){
-    $args = array("sort", $sort_field, $sort_value);
+  public function sort_list($sortField, $sortValue){
+    $args = array("sort", $sortField, $sortValue);
 
     call_user_func_array("self::products_field", $args);
   }
 
   private function _get_products_field(){
     # Throw exception if no product field
-    return json_encode($this->_data_query["products"]);
+    return json_encode($this->dataQuery["products"]);
   }
 
-  public function clear_query(){
-    $this->_data_query = array();
-    $this->_query_result = array();
+  public function clearQuery(){
+    $this->dataQuery = array();
+    $this->queryResult = array();
   }
 
-  public function iterate_products(){
-    if (gettype($this->_query_result) == "string"){
-      $query_result = json_decode($this->_query_result, true);
-      if (!array_key_exists('total_results_count', $query_result) || (array_key_exists('offset', $query_result) && $query_result['offset'] >= $query_result['total_results_count']))
+  public function iterateProducts(){
+    if (gettype($this->queryResult) == "string"){
+      $queryResult = json_decode($this->queryResult, true);
+      if (!array_key_exists('total_results_count', $queryResult) || (array_key_exists('offset', $queryResult) && $queryResult['offset'] >= $queryResult['total_results_count']))
         return 0;
 
       $limit = 10;
 
-      if (array_key_exists('limit', $this->_data_query["products"]))
-        $limit = $this->_data_query["products"]['limit'];
+      if (array_key_exists('limit', $this->dataQuery["products"]))
+        $limit = $this->dataQuery["products"]['limit'];
 
-      if (!array_key_exists('offset', $query_result))
-        $this->_data_query["products"]['offset'] = 0;
+      if (!array_key_exists('offset', $queryResult))
+        $this->dataQuery["products"]['offset'] = 0;
       else
-        $this->_data_query["products"]['offset'] = $query_result['offset'];
+        $this->dataQuery["products"]['offset'] = $queryResult['offset'];
 
-      $this->_data_query["products"]['offset'] += $limit;
+      $this->dataQuery["products"]['offset'] += $limit;
     }
-    return $this->get_products();
+    return $this->getProducts();
   }
 
-  public function all_products(){
-    $query_result = json_decode($this->_query_result, true);
-    return array_key_exists('results', $query_result) ? $query_result['results'] : 0;
+  public function allProducts(){
+    $queryResult = json_decode($this->queryResult, true);
+    return array_key_exists('results', $queryResult) ? $queryResult['results'] : 0;
   }
 
-  public function query_json($endpoint, $query_json){
-    $this->_query_result = parent::run_query($endpoint,json_decode($query_json));
-    return $this->_query_result;
+  public function queryJson($endpoint, $queryJson){
+    $this->queryResult = parent::run_query($endpoint,json_decode($queryJson));
+    return $this->queryResult;
   }
 
-  public function get_query_json($endpoint = null){
+  public function getQueryJson($endpoint = null){
     if ($endpoint == null){
       throw new ParameterError("Query Endpoint was not defined. You need to provide one. Eg: products");
     }
-    return json_encode($this->_data_query[$endpoint]);
+    return json_encode($this->dataQuery[$endpoint]);
   }
 
-  public function get_query($endpoint = null){
+  public function getQuery($endpoint = null){
     if ($endpoint == null){
       throw new ParameterError("Query Endpoint was not defined. You need to provide one. Eg: products");
     }
-    return $this->_data_query[$endpoint];
+    return $this->dataQuery[$endpoint];
   }
 
-  public function get_products(){
-    $this->_query_result = parent::run_query("products",$this->_data_query["products"]);
-    return $this->_query_result;
+  public function getProducts(){
+    $this->queryResult = parent::run_query("products",$this->dataQuery["products"]);
+    return $this->queryResult;
   }
 
-  public function query($endpoint, $query_arr = array()){
-    $this->_query_result = parent::run_query($endpoint,$query_arr);
-    return $this->_query_result;
+  public function query($endpoint, $queryArr = array()){
+    $this->queryResult = parent::run_query($endpoint,$queryArr);
+    return $this->queryResult;
   }
 
 }
