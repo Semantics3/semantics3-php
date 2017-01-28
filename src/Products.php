@@ -157,14 +157,14 @@ class Products extends Connector
     call_user_func_array("self::products_field", $args);
   }
 
-  public function sort_list($sortField, $sortValue)
+  public function sortList($sortField, $sortValue)
   {
     $args = array("sort", $sortField, $sortValue);
 
     call_user_func_array("self::products_field", $args);
   }
 
-  private function _get_products_field()
+  private function getProductsField()
   {
     # Throw exception if no product field
     return json_encode($this->dataQuery["products"]);
