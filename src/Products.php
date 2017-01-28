@@ -94,16 +94,12 @@ class Products extends Connector
    */
   public function getCategories()
   {
-    $this->queryResult = parent::run_query("categories", $this->dataQuery["categories"]);
-
-    return $this->queryResult;
+    return $this->runQuery("categories", $this->dataQuery["categories"]);
   }
 
   public function get_offers()
   {
-    $this->queryResult = parent::run_query("offers", $this->dataQuery["offers"]);
-
-    return $this->queryResult;
+    return $this->runQuery("offers", $this->dataQuery["offers"]);
   }
 
   private function nestArguments()
@@ -212,9 +208,7 @@ class Products extends Connector
 
   public function queryJson($endpoint, $queryJson)
   {
-    $this->queryResult = parent::run_query($endpoint, json_decode($queryJson));
-
-    return $this->queryResult;
+    return $this->runQuery($endpoint, json_decode($queryJson));
   }
 
   public function getQueryJson($endpoint = null)
@@ -237,16 +231,12 @@ class Products extends Connector
 
   public function getProducts()
   {
-    $this->queryResult = parent::run_query("products", $this->dataQuery["products"]);
-
-    return $this->queryResult;
+    return $this->runQuery("products", $this->dataQuery["products"]);
   }
 
   public function query($endpoint, $queryArr = array())
   {
-    $this->queryResult = parent::run_query($endpoint, $queryArr);
-
-    return $this->queryResult;
+    return $this->runQuery($endpoint, $queryArr);
   }
 
 }
