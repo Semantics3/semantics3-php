@@ -6,7 +6,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 $key = '';
 $secret = '';
 
-$requestor = new Semantics3\Products($key,$secret);
+$requestor = new Semantics3\Products($key, $secret);
 
 
 /**
@@ -26,7 +26,7 @@ $requestor->productsField("weight", "lt", 1500000);
 
 $requestor->productsField("sort", "name", "desc");
 
-echo $requestor->getProducts()."\n";
+echo $requestor->getProducts() . "\n";
 $requestor->clearQuery();
 
 /**
@@ -35,7 +35,7 @@ $requestor->clearQuery();
 */
 $requestor->productsField("sem3_id", array("2NnNAztqoGeoQGeSya0y4K", "0xzFQX9Ss8ecMwkMy0C8Ui", "1XgtmTtMgWswmYaGS6Kgyc") );
 
-echo $requestor->getProducts()."\n";
+echo $requestor->getProducts() . "\n";
 $requestor->clearQuery();
 
 /**
@@ -44,7 +44,7 @@ $requestor->clearQuery();
 */
 $requestor->categoriesField("name", "hard drives");
 
-echo $requestor->getCategories()."\n";
+echo $requestor->getCategories() . "\n";
 $requestor->clearQuery();
 
 
