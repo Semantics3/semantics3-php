@@ -62,7 +62,7 @@ class Products extends Connector
 
     $this->dataQuery[$endpoint] = array_merge_recursive(
         (array)$this->dataQuery[$endpoint],
-        call_user_func_array("self::_nest_arguments", $args)
+        call_user_func_array("self::nestArguments", $args)
     );
   }
 
@@ -112,7 +112,7 @@ class Products extends Connector
     } else if (count($args) > 2) {
       unset($args[0]);
       $args = array_values($args);
-      $query[$queryKey] = call_user_func_array("self::_nest_arguments", $args);
+      $query[$queryKey] = call_user_func_array("self::nestArguments", $args);
     }
 
     return $query;
@@ -128,7 +128,7 @@ class Products extends Connector
     $args = func_get_args();
     array_unshift($args, "sitedetails");
 
-    call_user_func_array("self::products_field", $args);
+    call_user_func_array("self::productsField", $args);
   }
 
   /**
@@ -140,28 +140,28 @@ class Products extends Connector
   {
     $args = array("sitedetails", $fieldName, $fieldValue1, $fieldValue2);
 
-    call_user_func_array("self::products_field", $args);
+    call_user_func_array("self::productsField", $args);
   }
 
   public function limit($limit)
   {
     $args = array("limit", $limit);
 
-    call_user_func_array("self::products_field", $args);
+    call_user_func_array("self::productsField", $args);
   }
 
   public function offset($offset)
   {
     $args = array("offset", $offset);
 
-    call_user_func_array("self::products_field", $args);
+    call_user_func_array("self::productsField", $args);
   }
 
   public function sortList($sortField, $sortValue)
   {
     $args = array("sort", $sortField, $sortValue);
 
-    call_user_func_array("self::products_field", $args);
+    call_user_func_array("self::productsField", $args);
   }
 
   private function getProductsField()
