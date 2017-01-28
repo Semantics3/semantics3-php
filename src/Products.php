@@ -7,8 +7,8 @@ use Semantics3\Api\Connector;
 class Products extends Connector
 {
 
-  private $queryResult = array();
-  private $dataQuery = array();
+  private $queryResult = [];
+  private $dataQuery = [];
 
 
   /**
@@ -57,7 +57,7 @@ class Products extends Connector
     $endpoint = array_shift($args);
 
     if (!array_key_exists($endpoint, $this->dataQuery)) {
-      $this->dataQuery[$endpoint] = array();
+      $this->dataQuery[$endpoint] = [];
     }
 
     $this->dataQuery[$endpoint] = array_merge_recursive(
@@ -172,8 +172,8 @@ class Products extends Connector
 
   public function clearQuery()
   {
-    $this->dataQuery = array();
-    $this->queryResult = array();
+    $this->dataQuery = [];
+    $this->queryResult = [];
   }
 
   public function iterateProducts()
@@ -234,7 +234,7 @@ class Products extends Connector
     return $this->runQuery("products", $this->dataQuery["products"]);
   }
 
-  public function query($endpoint, $queryArr = array())
+  public function query($endpoint, $queryArr = [])
   {
     return $this->runQuery($endpoint, $queryArr);
   }
