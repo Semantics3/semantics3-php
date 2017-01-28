@@ -12,13 +12,14 @@ abstract class Connector
   private $apiKey;
   private $apiSecret;
 
-  public function __construct($apiKey=null,$apiSecret=null,$apiBase=null){
+  public function __construct($apiKey = null, $apiSecret = null, $apiBase = null)
+  {
     $this->apiKey = $apiKey;
     $this->apiSecret = $apiSecret;
     $this->apiBase = is_null($apiBase) ? "https://api.semantics3.com/v1/" : $apiBase;
   }
 
-  public function runQuery($endpoint, $params, $method="GET", array $requestOptions = [])
+  public function runQuery($endpoint, $params, $method = "GET", array $requestOptions = [])
   {
     if (!$this->apiKey)
       throw new AuthenticationError('No API key provided.');
@@ -29,15 +30,14 @@ abstract class Connector
     $options = array( 'consumer_key' => $this->apiKey, 'consumer_secret' => $this->apiSecret );
     OAuthStore::instance("2Leg", $options );
     $url = $this->apiBase.$endpoint;
+
     if ($method == "GET") {
-      $url = $url."?q=".urlencode(json_encode($params));
-    }
-    else {
+      $url = $url . "?q=" . urlencode(json_encode($params));
+    } else {
       $params = json_encode($params);
     }
 
-    try
-    {
+    try {
       switch ($method) {
         case "GET":
           $request = new OAuthRequester($url, $method);
@@ -58,13 +58,10 @@ abstract class Connector
 
       $result = $request->doRequest($usrId, $curlOptions, $options);
       return $result['body'];
-    }
-    catch(OAuthException2 $e)
-    {
+    } catch(OAuthException2 $e) {
       print "\n";
       $error = $e->getMessage();
       print $error."\n";
     }
-
   }
 }

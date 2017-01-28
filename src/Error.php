@@ -10,7 +10,7 @@ class Error extends \Exception
 
   private $jsonBody;
 
-  public function __construct($message=null, $httpStatus=null, $httpBody=null, $jsonBody=null)
+  public function __construct($message = null, $httpStatus = null, $httpBody = null, $jsonBody = null)
   {
     parent::__construct($message);
     $this->httpStatus = $httpStatus;
