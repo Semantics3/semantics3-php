@@ -18,6 +18,9 @@
     "php": ">=5.2"
   },
   "autoload": {
-    "classmap": ["lib/Semantics3/"]
+    "classmap": ["lib/oauth-php"],
+    "psr-4": {
+      "Semantics3\\": "src"
+    }
   }
 }

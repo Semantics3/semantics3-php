@@ -1,6 +1,10 @@
 <?php
 
-class Semantics3_Products extends Api_Connector {
+namespace Semantics3;
+
+use Semantics3\Api\Connector;
+
+class Products extends Connector {
 
   private $_query_result = array();
   private $_data_query = array();
@@ -66,7 +70,7 @@ class Semantics3_Products extends Api_Connector {
           $query = &$query[$value];
       }
       else {
-        throw new Semantics3_ParameterError("Attempted to detele something which didn't exist.");
+        throw new ParameterError("Attempted to detele something which didn't exist.");
       }
     }
   }
@@ -186,14 +190,14 @@ class Semantics3_Products extends Api_Connector {
 
   public function get_query_json($endpoint = null){
     if ($endpoint == null){
-      throw new Semantics3_ParameterError("Query Endpoint was not defined. You need to provide one. Eg: products");
+      throw new ParameterError("Query Endpoint was not defined. You need to provide one. Eg: products");
     }
     return json_encode($this->_data_query[$endpoint]);
   }
 
   public function get_query($endpoint = null){
     if ($endpoint == null){
-      throw new Semantics3_ParameterError("Query Endpoint was not defined. You need to provide one. Eg: products");
+      throw new ParameterError("Query Endpoint was not defined. You need to provide one. Eg: products");
     }
     return $this->_data_query[$endpoint];
   }

@@ -1,12 +1,12 @@
 <?php 
     
-require('lib/Semantics3.php');
+require_once __DIR__ . '/vendor/autoload.php';
 
 
 $key = '';
 $secret = '';
 
-$requestor = new Semantics3_Products($key,$secret);
+$requestor = new Semantics3\Products($key,$secret);
 
 
 /**

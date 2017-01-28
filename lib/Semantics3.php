@@ -9,7 +9,7 @@ if (!function_exists('curl_init')) {
 if (!function_exists('json_decode')) {
   throw new Exception('Semantics3 needs the JSON PHP extension.');
 }
-if (!class_exists('OAuthRequester')) {
+if (!class_exists('OAuthequester')) {
   throw new Exception('Semantics3 needs the OAUTH-PHP extension.');
 }
 

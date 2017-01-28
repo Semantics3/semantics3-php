@@ -1,6 +1,13 @@
 <?php
 
-abstract class Api_Connector
+namespace Semantics3\Api;
+
+use Semantics3\AuthenticationError;
+use OAuthException2;
+use OAuthRequester;
+use OAuthStore;
+
+abstract class Connector
 {
   private $apiKey;
   private $apiSecret;
@@ -14,10 +21,10 @@ abstract class Api_Connector
   public function run_query($endpoint, $params, $method="GET", array $requestOptions = [])
   {
     if (!$this->apiKey)
-      throw new Semantics3_AuthenticationError('No API key provided.');
+      throw new AuthenticationError('No API key provided.');
 
     if (!$this->apiSecret)
-      throw new Semantics3_AuthenticationError('No API secret provided.');
+      throw new AuthenticationError('No API secret provided.');
 
     $options = array( 'consumer_key' => $this->apiKey, 'consumer_secret' => $this->apiSecret );
     OAuthStore::instance("2Leg", $options );

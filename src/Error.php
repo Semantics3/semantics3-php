@@ -1,7 +1,15 @@
 <?php
 
-class Semantics3_Error extends Exception
+namespace Semantics3;
+
+class Error extends \Exception
 {
+  private $http_status;
+
+  private $http_body;
+
+  private $json_body;
+
   public function __construct($message=null, $http_status=null, $http_body=null, $json_body=null)
   {
     parent::__construct($message);
