@@ -16,7 +16,6 @@ class Semantics3_Products extends Api_Connector {
     array_unshift($args, "products");
 
     call_user_func_array("self::add", $args);
-    return;
   }
 
   /**
@@ -29,7 +28,6 @@ class Semantics3_Products extends Api_Connector {
     array_unshift($args, "categories");
 
     call_user_func_array("self::add", $args);
-    return;
   }
 
   public function offers_field(){
@@ -37,7 +35,6 @@ class Semantics3_Products extends Api_Connector {
     array_unshift($args, "offers");
 
     call_user_func_array("self::add", $args);
-    return;
   }
 
   public function add(){
