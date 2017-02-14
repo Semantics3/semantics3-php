@@ -1,4 +1,7 @@
 # semantics3-php
+
+[![Build Status](https://travis-ci.org/Semantics3/semantics3-php.svg?branch=master)](https://travis-ci.org/Semantics3/semantics3-php)
+
 semantics3-php is the PHP bindings for accessing the Semantics3 Products API, which provides structured information, including pricing histories, for a large number of products.
 See https://www.semantics3.com for more information.
 
