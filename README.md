@@ -2,7 +2,6 @@
 semantics3-php is the PHP bindings for accessing the Semantics3 Products API, which provides structured information, including pricing histories, for a large number of products.
 See https://www.semantics3.com for more information.
 
-Quickstart guide: https://www.semantics3.com/quickstart
 API documentation can be found at https://www.semantics3.com/docs/
 
 ## Installation
