@@ -75,13 +75,24 @@ class Semantics3_Products extends Api_Connector {
    * get the categories from the API
    * 
    * This function calls the API and returns the categories based on the query
+   *
+   * @throws Semantics3_AuthenticationError
+   * @throws OAuthException2
+   *
+   * @return array
    */
   public function get_categories(){
     $this->_query_result = parent::run_query("categories",$this->_data_query["categories"]);
     return $this->_query_result;
   }
 
-    public function get_offers(){
+  /**
+   * @throws Semantics3_AuthenticationError
+   * @throws OAuthException2
+   *
+   * @return array
+   */
+  public function get_offers(){
     $this->_query_result = parent::run_query("offers",$this->_data_query["offers"]);
     return $this->_query_result;
   }
@@ -179,6 +190,15 @@ class Semantics3_Products extends Api_Connector {
     return array_key_exists('results', $query_result) ? $query_result['results'] : 0;
   }
 
+  /**
+   * @param string $endpoint
+   * @param string $query_json
+   *
+   * @throws Semantics3_AuthenticationError
+   * @throws OAuthException2
+   *
+   * @return array
+   */
   public function query_json($endpoint, $query_json){
     $this->_query_result = parent::run_query($endpoint,json_decode($query_json));
     return $this->_query_result;
@@ -198,11 +218,26 @@ class Semantics3_Products extends Api_Connector {
     return $this->_data_query[$endpoint];
   }
 
+  /**
+   * @throws Semantics3_AuthenticationError
+   * @throws OAuthException2
+   *
+   * @return array
+   */
   public function get_products(){
     $this->_query_result = parent::run_query("products",$this->_data_query["products"]);
     return $this->_query_result;
   }
 
+  /**
+   * @param string $endpoint
+   * @param array  $query_arr
+   *
+   * @throws Semantics3_AuthenticationError
+   * @throws OAuthException2
+   *
+   * @return array
+   */
   public function query($endpoint, $query_arr = array()){
     $this->_query_result = parent::run_query($endpoint,$query_arr);
     return $this->_query_result;

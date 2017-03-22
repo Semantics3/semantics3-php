@@ -11,6 +11,17 @@ abstract class Api_Connector
     $this->apiBase = is_null($apiBase) ? "https://api.semantics3.com/v1/" : $apiBase;
   }
 
+  /**
+   * @param string $endpoint
+   * @param array  $params
+   * @param string $method
+   * @param array  $requestOptions
+   *
+   * @return array
+   *
+   * @throws Semantics3_AuthenticationError
+   * @throws OAuthException2
+   */
   public function run_query($endpoint, $params, $method="GET", array $requestOptions = [])
   {
     if (!$this->apiKey)
@@ -29,35 +40,26 @@ abstract class Api_Connector
       $params = json_encode($params);
     }
 
-    try
-    {
-      switch ($method) {
-        case "GET":
-          $request = new OAuthRequester($url, $method);
-          break;
-        case "POST":
-          $request = new OAuthRequester($url, $method, '', $params);
-          break;
-        case "DELETE":
-          $request = new OAuthRequester($url, $method);
-          break;
-        default:
-          $request = new OAuthRequester($url, $method);
-      }
-
-      $usrId = array_key_exists('usrId', $requestOptions) ? $requestOptions['usrId'] : 0;
-      $curlOptions = array_key_exists('curlOptions', $requestOptions) ? $requestOptions['curlOptions'] : [];
-      $options = array_key_exists('options', $requestOptions) ? $requestOptions['options'] : [];
-
-      $result = $request->doRequest($usrId, $curlOptions, $options);
-      return $result['body'];
-    }
-    catch(OAuthException2 $e)
-    {
-      print "\n";
-      $error = $e->getMessage();
-      print $error."\n";
+    switch ($method) {
+      case "GET":
+        $request = new OAuthRequester($url, $method);
+        break;
+      case "POST":
+        $request = new OAuthRequester($url, $method, '', $params);
+        break;
+      case "DELETE":
+        $request = new OAuthRequester($url, $method);
+        break;
+      default:
+        $request = new OAuthRequester($url, $method);
     }
 
+    $usrId = array_key_exists('usrId', $requestOptions) ? $requestOptions['usrId'] : 0;
+    $curlOptions = array_key_exists('curlOptions', $requestOptions) ? $requestOptions['curlOptions'] : [];
+    $options = array_key_exists('options', $requestOptions) ? $requestOptions['options'] : [];
+
+    $result = $request->doRequest($usrId, $curlOptions, $options);
+
+    return $result['body'];
   }
 }
