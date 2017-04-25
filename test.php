@@ -1,51 +1,51 @@
 <?php 
     
-require('lib/Semantics3.php');
+require_once __DIR__ . '/vendor/autoload.php';
 
 
 $key = '';
 $secret = '';
 
-$requestor = new Semantics3_Products($key,$secret);
+$requestor = new Semantics3\Products($key, $secret);
 
 
 /**
 * Random Complicated Query
 * 
 */
-$requestor->products_field("cat_id", 4992);
-$requestor->products_field("brand", "Toshiba");
-$requestor->products_field("name", "Portege");
+$requestor->productsField("cat_id", 4992);
+$requestor->productsField("brand", "Toshiba");
+$requestor->productsField("name", "Portege");
 
-$requestor->products_field("sitedetails", "name", "amazon.com");
+$requestor->productsField("sitedetails", "name", "amazon.com");
 $requestor->sitedetails("latestoffers", "price", "gte", 100);
 $requestor->sitedetails("latestoffers", "currency", "USD");
 
-$requestor->products_field("weight", "gte", 1000000);
-$requestor->products_field("weight", "lt", 1500000);
+$requestor->productsField("weight", "gte", 1000000);
+$requestor->productsField("weight", "lt", 1500000);
 
-$requestor->products_field("sort", "name", "desc");
+$requestor->productsField("sort", "name", "desc");
 
-echo $requestor->get_products()."\n";
-$requestor->clear_query();
+echo $requestor->getProducts() . "\n";
+$requestor->clearQuery();
 
 /**
 * Sem3_ID Array Query
 * 
 */
-$requestor->products_field("sem3_id", array("2NnNAztqoGeoQGeSya0y4K", "0xzFQX9Ss8ecMwkMy0C8Ui", "1XgtmTtMgWswmYaGS6Kgyc") );
+$requestor->productsField("sem3_id", array("2NnNAztqoGeoQGeSya0y4K", "0xzFQX9Ss8ecMwkMy0C8Ui", "1XgtmTtMgWswmYaGS6Kgyc") );
 
-echo $requestor->get_products()."\n";
-$requestor->clear_query();
+echo $requestor->getProducts() . "\n";
+$requestor->clearQuery();
 
 /**
 * Category Query
 * 
 */
-$requestor->categories_field("name", "hard drives");
+$requestor->categoriesField("name", "hard drives");
 
-echo $requestor->get_categories()."\n";
-$requestor->clear_query();
+echo $requestor->getCategories() . "\n";
+$requestor->clearQuery();
 
 
 
