@@ -10,6 +10,19 @@ API documentation can be found at https://www.semantics3.com/docs/
 semantics3-php can be installed through composer:
 
 ```bash
+php composer.phar require "semantics3/semantics3-php @dev"
+```
+
+or alter your `composer.json` file
+```json
+    "require": {
+        ...
+        "semantics3/semantics3-php": "@dev"
+        ...
+    }
+```
+and do the following command:
+```bash
 php composer.phar install
 ```
 
